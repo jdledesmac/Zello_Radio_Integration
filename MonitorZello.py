@@ -6,12 +6,16 @@ import time
 import aiohttp
 import socket
 import configparser
-from opus import encoder, decoder
+#from opus import encoder, decoder
+from pyogg import OpusEncoder as encoder
+from pyogg import OpusDecoder as decoder
 import audioop
 import random
 from time import time as timestamper
 
 
+
+#PARAMETERS
 WS_ENDPOINT= None
 UDP_IP = 0
 UDP_PORT = 0 
@@ -26,8 +30,8 @@ server_address = None
 
 #MAIN FUNCTION
 def main():
+    ''' Main function: Load config and start Zello audio streaming '''
     global ZelloWS, ZelloStreamID, server_address, WS_ENDPOINT, UDP_IP, UDP_PORT, RATE, RTP_CHUNK
-
     try:
         #os.chdir("../")
         config = configparser.ConfigParser()
@@ -47,7 +51,6 @@ def main():
         print(WS_ENDPOINT)
         print(UDP_PORT)
         print(server_address)
-
     except KeyError as error:
         print("Check config file. Missing key:", error)
         return
@@ -60,7 +63,6 @@ def main():
         try:
             if ZelloWS and ZelloStreamID:
                 loop.run_until_complete(zello_stream_stop(ZelloWS, ZelloStreamID))
-
         except aiohttp.client_exceptions.ClientError as error:
             print("Error during stopping. ", error)
 
